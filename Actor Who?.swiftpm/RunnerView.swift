@@ -32,6 +32,7 @@ struct RunnerView: View {
             .task {
                 let joke = Joke.knock
                 let response = await model.ask(joke: joke)
+                let response2 = await model.ask(joke: response)
                 print("done with task: \(response!.line)")
             }
             .actionSheet(item: $model.question) { joke in 
