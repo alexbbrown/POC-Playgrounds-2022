@@ -24,21 +24,46 @@ class AnswerModel: ObservableObject {
     
 }
 
-
-
 struct RunnerView: View {
+    var body: some View {
+        QuestionnaireView { ask in
+            let name = await ask(
+                "What's your name",
+                .multipleChoice(["Alex", "Milou", "Margot"])
+            )
+            
+            let age = await ask(
+                "Hi \(name), How old are you?", 
+                    .multipleChoice(["10", "20", "30"])
+            )
+            
+            let confirmed = await ask(
+                "Is it true, \(name), that you are \(age)?",
+                .confirmation
+            )
+            
+            print("done with task: \(confirmed)")
+            
+            return confirmed
+        }
+    }
+}
+
+struct QuestionnaireView: View {
+    
+    typealias Query = (String, Answers) async -> String
+    
+    let script: (Query) async -> String 
+    
     @StateObject var model = AnswerModel()
     
     var body: some View {
         Text("runner")
             .task {
-                let who = Question("What's your name", answers: ["Alex", "Milou", "Margot"])
-                let name = await model.ask(who)
-                let howOld = Question("Hi \(name), How old are you?", answers: ["10", "20", "30"])
-                let age = await model.ask(howOld)
-                let confirm = Question("Is it true, \(name), that you are \(age)?")
-                let confirmed = await model.ask(confirm)
-                print("done with task: \(confirmed)")
+                _ = await script { question, answers in 
+                    let q = Question(question: question, answers: answers)
+                    return await model.ask(q)
+                }
             }
             .actionSheet(item: $model.question) { joke in 
                 joke.sheet { answer in 
