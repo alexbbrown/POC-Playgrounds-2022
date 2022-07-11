@@ -16,3 +16,9 @@ struct SampleJokeView: View {
         }
     }
 }
+
+struct SampleJokeView_Previews: PreviewProvider {
+    static var previews: some View {
+        SampleJokeView()
+    }
+}
