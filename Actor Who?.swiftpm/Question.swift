@@ -20,14 +20,12 @@ extension Question {
         ActionSheet(
             title: Text("hello"),
             message: Text(self.question),
-            buttons: [
-                .default(Text("ouch")) {
-                    action("outch")
-                },
-                .default(Text("Meep")) {
-                    action("meep")
+            buttons: 
+                answers.map { answer -> ActionSheet.Button in
+                    .default(Text(answer)) {
+                        action(answer)
+                    }
                 }
-            ]
         )
     }
 }
