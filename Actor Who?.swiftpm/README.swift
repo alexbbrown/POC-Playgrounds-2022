@@ -4,4 +4,13 @@
  
  Knock Knock!
 
+ Possible enhancements
+ 
+ can I make it generic?
+ do I need a fixed sheet?
+ does it always have to be a sheet?
+ 
+ can a result builder generate ASYNC code?
+ can a result builder build VIEWs at the SAME TIME as ASYNC code?
+ 
 **/
