@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct ContentView: View {
+struct SampleJokeView: View {
     var body: some View {
         VStack {
             Text("Knock Knock")
@@ -14,18 +14,5 @@ struct ContentView: View {
             Text("Never mind, there's no point")
                 .knocker
         }
-    }
-}
-
-extension View {
-    var knocker: some View {
-        self
-            .font(.title)
-            .foregroundColor(.blue)
-    }
-    var whoever: some View {
-        self
-            .font(.title)
-            .foregroundColor(.yellow)
     }
 }
