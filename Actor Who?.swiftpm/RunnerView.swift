@@ -1,17 +1,42 @@
 import SwiftUI
 
+class ContinuationModel: ObservableObject {
+    
+    @Published var question: Joke?
+    
+    var continuation: CheckedContinuation<Joke?, Never>?
+    
+    func ask(joke: Joke?) async -> Joke? {
+        
+        return await withCheckedContinuation { aContinuation in
+            self.question = joke
+            continuation = aContinuation
+        }
+    }
+    
+    func answer(joke: Joke?) {
+        question = nil
+        if let c = continuation {
+            continuation = nil
+            c.resume(returning: joke)
+        }
+    }
+    
+}
+
 struct RunnerView: View {
-    @State var joke: Joke?
+    @StateObject var model = ContinuationModel()
     
     var body: some View {
         Text("runner")
             .task {
-                let asker0 = asker($joke) 
-                await run(asker: asker0)
+                let joke = Joke.knock
+                let response = await model.ask(joke: joke)
+                print("done with task: \(response!.line)")
             }
-            .actionSheet(item: $joke) { joke in 
+            .actionSheet(item: $model.question) { joke in 
                 joke.sheet {
-                    self.joke = joke.next
+                    model.answer(joke: joke.next)
                 }
             }
     }
