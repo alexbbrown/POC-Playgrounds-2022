@@ -41,7 +41,23 @@ enum Joke: Identifiable {
             return "Who's there?"
         }
     }
+    
+    func sheet() -> ActionSheet {
+        ActionSheet(
+            title: Text("hello"),
+            message: Text(self.line),
+            buttons: [
+                .default(Text("ouch")) {
+                    
+                }
+            ]
+        )
+    }
 }
+
+typealias response = Void
+typealias Sheet = (Joke) -> ActionSheet
+
 
 struct SheetsView: View {
     @State var joke: Joke? = .knock
@@ -51,15 +67,7 @@ struct SheetsView: View {
     var body: some View {
         Text("placeholder")
             .actionSheet(item: $joke) { joke in
-                ActionSheet(
-                    title: Text("hello"),
-                    message: Text(joke.line),
-                    buttons: [
-                        .default(Text("ouch")) {
-                            clicked()
-                        }
-                    ]
-                )
+                joke.sheet()
             }
     }
 }
