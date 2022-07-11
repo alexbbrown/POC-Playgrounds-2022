@@ -28,7 +28,9 @@ struct SheetsView: View {
     var body: some View {
         Text("placeholder")
             .actionSheet(item: $joke) { joke in
-                joke.sheet()
+                joke.sheet {
+                    
+                }
             }
     }
 }

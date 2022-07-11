@@ -10,7 +10,9 @@ struct RunnerView: View {
                 await run(asker: asker0)
             }
             .actionSheet(item: $joke) { joke in 
-                joke.sheet()
+                joke.sheet {
+                    self.joke = joke.next
+                }
             }
     }
 }
@@ -21,9 +23,10 @@ struct RunnerView_Previews: PreviewProvider {
     }
 }
 
-func asker(_ joke: Binding<Joke?>) -> (Joke) async -> Joke {
+func asker(_ binding: Binding<Joke?>) -> (Joke) async -> Joke {
     { joke in
-        joke
+        binding.wrappedValue = joke
+        return joke
     }
 } 
 

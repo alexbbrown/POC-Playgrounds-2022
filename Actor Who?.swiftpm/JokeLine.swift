@@ -26,13 +26,13 @@ enum Joke: Identifiable {
         }
     }
     
-    func sheet() -> ActionSheet {
+    func sheet(_ action: @escaping () -> ()) -> ActionSheet {
         ActionSheet(
             title: Text("hello"),
             message: Text(self.line),
             buttons: [
                 .default(Text("ouch")) {
-                    
+                    action()
                 }
             ]
         )
