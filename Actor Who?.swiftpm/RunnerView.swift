@@ -2,27 +2,30 @@ import SwiftUI
 
 class ContinuationModel: ObservableObject {
     
-    @Published var question: Joke?
+    @Published var question: Question?
+    typealias Answer = String
     
-    var continuation: CheckedContinuation<Joke?, Never>?
+    var answerContinuation: CheckedContinuation<Answer?, Never>?
     
-    func ask(joke: Joke?) async -> Joke? {
+    func ask(_ question: Question?) async -> Answer? {
         
-        return await withCheckedContinuation { aContinuation in
-            self.question = joke
-            continuation = aContinuation
+        return await withCheckedContinuation { continuation in
+            self.question = question
+            answerContinuation = continuation
         }
     }
     
-    func answer(joke: Joke?) {
+    func answer(_ answer: String?) {
         question = nil
-        if let c = continuation {
-            continuation = nil
-            c.resume(returning: joke)
+        if let c = answerContinuation {
+            answerContinuation = nil
+            c.resume(returning: answer)
         }
     }
     
 }
+
+
 
 struct RunnerView: View {
     @StateObject var model = ContinuationModel()
@@ -30,14 +33,15 @@ struct RunnerView: View {
     var body: some View {
         Text("runner")
             .task {
-                let joke = Joke.knock
-                let response = await model.ask(joke: joke)
-                let response2 = await model.ask(joke: response)
-                print("done with task: \(response!.line)")
+                let who = Question("What's your name", answers: ["Alex", "Margot"])
+                let name = await model.ask(who)
+                let age = Question("Hi \(name) How old?", answers: ["10", "20", "30"])
+                let response2 = await model.ask(age)
+                print("done with task: \(response2)")
             }
             .actionSheet(item: $model.question) { joke in 
-                joke.sheet {
-                    model.answer(joke: joke.next)
+                joke.sheet { answer in 
+                    model.answer(answer)
                 }
             }
     }
