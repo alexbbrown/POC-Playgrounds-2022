@@ -61,19 +61,6 @@ struct SheetsView: View {
                     ]
                 )
             }
-//            .actionSheet(item: $joke)
-//        { 
-//                print("hi")
-//            } content: 
-//        { joke in
-//            ActionSheet(title: Text("hello"), 
-//                        message: Text("wow"), 
-//                        buttons: [ActionSheet.Button])
-//                SheetView(joke: joke) {
-//                    self.joke = joke.next 
-//                }
-//            }
-        
     }
 }
 
