@@ -2,14 +2,32 @@ import SwiftUI
 
 struct SheetView: View {
     let joke: Joke
+    let action: () -> ()
     var body: some View {
-        Text(joke.line)
+        Form {
+            Text(joke.line)
+                
+            Button(role: .destructive) { 
+                action()
+            } label: { 
+                Text("Next")
+            }
+        }
     }
 }
 
 enum Joke: Identifiable {
     case knock
     case who
+    
+    var next: Joke {
+        switch self {
+            case .knock:
+            return .who
+            default: 
+            return self
+        }
+    }
     
     var id: String {
         String(describing: self)
@@ -27,13 +45,34 @@ enum Joke: Identifiable {
 
 struct SheetsView: View {
     @State var joke: Joke? = .knock
+    func clicked() {
+        print("clicked")
+    }
     var body: some View {
         Text("placeholder")
-            .sheet(item: $joke) { 
-                print("hi")
-            } content: { joke in
-                SheetView(joke: joke)
+            .actionSheet(item: $joke) { joke in
+                ActionSheet(
+                    title: Text("hello"),
+                    message: Text(joke.line),
+                    buttons: [
+                        .default(Text("ouch")) {
+                            clicked()
+                        }
+                    ]
+                )
             }
+//            .actionSheet(item: $joke)
+//        { 
+//                print("hi")
+//            } content: 
+//        { joke in
+//            ActionSheet(title: Text("hello"), 
+//                        message: Text("wow"), 
+//                        buttons: [ActionSheet.Button])
+//                SheetView(joke: joke) {
+//                    self.joke = joke.next 
+//                }
+//            }
         
     }
 }
