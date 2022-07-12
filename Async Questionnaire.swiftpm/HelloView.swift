@@ -1,10 +1,10 @@
 import SwiftUI
 
-struct RunnerView: View {
+struct HelloView: View {
     var body: some View {
         QuestionnaireView { ask in
             let name = await ask(
-                "What's your name",
+                "Hello!, What's your name?",
                 .multipleChoice(["Alex", "Milou", "Margot"])
             )
             
@@ -19,8 +19,6 @@ struct RunnerView: View {
             )
             
             print("done with task: \(confirmed)")
-            
-            return confirmed
         }
     }
 }

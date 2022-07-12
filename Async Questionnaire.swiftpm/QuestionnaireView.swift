@@ -3,6 +3,7 @@ import SwiftUI
 /// Translates question / responses into an async function 'ask'.
 /// Uses continuations
 class AnswerModel: ObservableObject {
+    /// The value passed to the QuestionView (ActionSheet)
     @Published var question: Question?
     typealias Answer = String
     
@@ -38,14 +39,14 @@ struct QuestionnaireView: View {
     typealias Query = (String, Answers) async -> String
     
     /// The script taskes a query function, which can be called repeatedly to find the answer to several questions.
-    let script: (Query) async -> String 
+    let script: (Query) async -> Void 
     
     @StateObject var model = AnswerModel()
     
     var body: some View {
         Text("runner")
             .task {
-                _ = await script { question, answers in 
+                await script { question, answers in 
                     let q = Question(question: question, answers: answers)
                     return await model.ask(q)
                 }
