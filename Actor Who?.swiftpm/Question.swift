@@ -1,5 +1,7 @@
 import SwiftUI
 
+/// Question includes a question prompt and the set of possible answers.  
+/// It's the data model for the question 'View' (which is an ActionSheet).
 struct Question: Identifiable {
     let question: String
     typealias Answer = String
@@ -11,12 +13,15 @@ struct Question: Identifiable {
     }
 }
 
+/// The possible forms of an answer.
 enum Answers {
     case multipleChoice([String])
+    /// confirmation returns "yes" or "no"
     case confirmation
 }
 
 extension Answers {
+    /// Each possible answer is generated as an ActionSheet.Button button 
     func buttons(_ action: @escaping (String) -> ()) -> [ActionSheet.Button] {
         switch self {
         case .multipleChoice(let answers):
@@ -39,7 +44,7 @@ extension Answers {
 }
 
 extension Question {
-    
+    /// Generate the actionsheet for the question
     func sheet(_ action: @escaping (String) -> ()) -> ActionSheet {
         ActionSheet(
             title: Text(self.question)
