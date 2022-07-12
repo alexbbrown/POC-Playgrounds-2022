@@ -44,7 +44,7 @@ struct QuestionnaireView: View {
     @StateObject var model = AnswerModel()
     
     var body: some View {
-        Text("runner")
+        Text("Questionnaire")
             .task {
                 await script { question, answers in 
                     let q = Question(question: question, answers: answers)
