@@ -15,6 +15,13 @@
  
  can I make it composable - is the result of the *whole* questionnaire a value which is itself an 'answer'?  would require arbitrary type handling.  For example, after collecting details of a user, 'return' a new user record. 
  
+ can I make it work with multiple types of sheet/wizard/custom?
+ 
+ Drawbacks:
+ 
+ state restoration very hard
+ going *back* arbitrary steps is hard - but could be done using label: do {} blocks 
+ 
  Log: 
  
  updated swiftUI code to use modern confirmationDialog

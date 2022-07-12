@@ -15,7 +15,7 @@ struct Question: Identifiable {
 
 /// The possible forms and values of an answer.
 enum Answers {
-    case multipleChoice([String])
+    case choose([String])
     /// confirmation returns "yes" or "no"
-    case confirmation
+    case confirm
 }

@@ -10,13 +10,13 @@ struct HelloView: View {
             start: do { // if the user cancels, restart here
                 let name = try await ask(
                     "Hello!, What's your name?",
-                    .multipleChoice(["Alex", "Milou", "Margot", "Someone else"])
+                    .choose(["Alex", "Milou", "Margot", "Someone else"])
                 )
                 
                 if name == "Someone else" {
                     let restart = try? await ask(
                         "I only talk to friends.  Try again?",
-                        .confirmation
+                        .confirm
                     )
                     
                     if restart == "yes" {
@@ -29,7 +29,7 @@ struct HelloView: View {
                 
                 let age = try await ask(
                     "Hi \(name), How old are you?", 
-                        .multipleChoice(["10", "20", "30"])
+                        .choose(["10", "20", "30"])
                 )
                 
                 let confirmed = try await ask(
@@ -47,7 +47,7 @@ struct HelloView: View {
                 
                 let restart = try? await ask(
                     "You cancelled: Start again?",
-                    .confirmation
+                    .confirm
                 )
                 
                 if restart == "yes" {

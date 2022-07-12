@@ -18,7 +18,7 @@ struct QuestionModifier: ViewModifier {
                 presenting: question
             ) { question in
                 switch question.answers {
-                case .multipleChoice(let answers):
+                case .choose(let answers):
                     ForEach(answers, id: \.self) { answer in
                         Button(answer) { 
                             action(answer)
@@ -29,7 +29,7 @@ struct QuestionModifier: ViewModifier {
                     } label: {
                         Text("Cancel")
                     }
-                case .confirmation:
+                case .confirm:
                     Button("Yes") {
                         action("yes")
                     }
@@ -67,7 +67,7 @@ struct QuestionModifier_Previews: PreviewProvider {
                 presented: .constant(true), 
                 question: Question(
                     question: "Is it more noble in the mind",
-                    answers: .multipleChoice(["To be", "Not to be"])
+                    answers: .choose(["To be", "Not to be"])
                 )) { answer in
                     print("Answered \(answer)")
                 } cancel: { error in
