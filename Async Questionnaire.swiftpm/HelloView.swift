@@ -1,8 +1,10 @@
 import SwiftUI
 
 /// Hello View welcomes the user and collects some information
-/// The interaction state machine is passed as an imperative function which repeatedly calls 'ask'.
-/// each call of ask pauses (awaits) the script and passes control to the UI.
+/// This interaction takes the form of a script which asks multiple questions. 
+/// The *state machine* for this interaction is written as a function which repeatedly calls 'ask' for each question
+/// The state machine can contain ifs, fors, and error handling.
+/// each call to ask pauses (awaits) the script and passes control to the UI which prompts the user to responsd
 /// Once the user picks an answer the script resumes.
 struct HelloView: View {
     var body: some View {
@@ -34,7 +36,7 @@ struct HelloView: View {
                 
                 let confirmed = try await ask(
                     "Is it true, \(name), that you are \(age)?",
-                    .confirmation
+                    .confirm
                 )
                 
                 if confirmed == "no" {
