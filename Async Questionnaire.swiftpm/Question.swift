@@ -22,7 +22,7 @@ enum Answers {
 
 extension Answers {
     /// Each possible answer is generated as an ActionSheet.Button button 
-    func buttons(_ action: @escaping (String) -> ()) -> [ActionSheet.Button] {
+    func buttons(_ action: @escaping (String) -> Void) -> [ActionSheet.Button] {
         switch self {
         case .multipleChoice(let answers):
             return answers.map { answer -> ActionSheet.Button in
@@ -41,6 +41,25 @@ extension Answers {
             ]
         }
     }
+    
+    @ViewBuilder
+    func buttons2(_ action: @escaping (String) -> Void) -> some View {
+        switch self {
+        case .multipleChoice(let answers):
+            ForEach(answers, id: \.self) { answer in
+                Button(answer) { 
+                    action(answer)
+                }
+            }
+        case .confirmation:
+            Button("Yes") {
+                action("yes")
+            }
+            Button("No") {
+                action("no")
+            }
+        }
+    }
 }
 
 extension Question {
@@ -52,5 +71,50 @@ extension Question {
             buttons: 
                 answers.buttons(action)
         )
+    }
+}
+
+extension View {
+    /// Convenience way to call questionModifier
+    func question(presented: Binding<Bool>, question: Question?, action: @escaping (Question.Answer) -> Void) -> some View {
+        modifier(QuestionModifier(
+            presented: presented, 
+            question: question,
+            action: action
+        ))
+    }
+}
+
+struct QuestionModifier: ViewModifier {
+    
+    @Binding var presented: Bool
+    let question: Question? 
+    let action: (String) -> Void
+    
+    func body(content: Content) -> some View {
+        content
+            .confirmationDialog(
+                "Question",
+                isPresented: $presented, 
+//                titleVisibility: .visible,
+                presenting: question
+            ) { question in
+                question.answers.buttons2 { answer in
+                    action(answer)
+                }
+            } message: { question in
+                Text(question.question)
+            }
+        
+    }
+}
+
+struct QuestionModifier_Previews: PreviewProvider {
+    static var previews: some View {
+        Text("Modifier")
+            .question(presented: .constant(true), question: Question(question: "Is it more noble in the mind",
+                                                                      answers: .multipleChoice(["To be", "Not to be"])), action: { answer in
+                print("Answered \(answer)")
+            })
     }
 }

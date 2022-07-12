@@ -7,6 +7,21 @@ class AnswerModel: ObservableObject {
     @Published var question: Question?
     typealias Answer = String
     
+    /// Should we present this view
+    var presented: Bool {
+        get {
+            question != nil
+        }
+        set {
+            if !newValue {
+                question = nil
+            } else {
+                fatalError() // Can't set this true manually
+            }
+        }
+        
+    }
+    
     var answerContinuation: CheckedContinuation<Answer, Never>?
     
     /// ask function is sent to the clients 'script' function
@@ -51,10 +66,15 @@ struct QuestionnaireView: View {
                     return await model.ask(q)
                 }
             }
-            .actionSheet(item: $model.question) { question in 
-                question.sheet { answer in 
+//            .actionSheet(item: $model.question) { question in 
+//                question.sheet { answer in 
+//                    model.answer(answer)
+//                }
+//            }
+            .question(
+                presented: $model.presented,
+                question: model.question) { answer in
                     model.answer(answer)
                 }
-            }
     }
 }
