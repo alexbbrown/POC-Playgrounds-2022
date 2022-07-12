@@ -13,4 +13,11 @@
  can a result builder generate ASYNC code?
  can a result builder build VIEWs at the SAME TIME as ASYNC code?
  
+ Log: 
+ 
+ updated swiftUI code to use modern confirmationDialog
+ added cancellation handling.  makes script more ugly though :(
+ 
 **/
+
+

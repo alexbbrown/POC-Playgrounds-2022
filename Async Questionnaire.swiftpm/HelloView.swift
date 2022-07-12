@@ -1,13 +1,31 @@
 import SwiftUI
 
+/// Hello View welcomes the user and collects some information
+/// The interaction state machine is passed as an imperative function which repeatedly calls 'ask'.
+/// each call of ask pauses (awaits) the script and passes control to the UI.
+/// Once the user picks an answer the script resumes.
 struct HelloView: View {
     var body: some View {
         QuestionnaireView { ask in
-            start: do {
+            start: do { // if the user cancels, restart here
                 let name = try await ask(
                     "Hello!, What's your name?",
-                    .multipleChoice(["Alex", "Milou", "Margot"])
+                    .multipleChoice(["Alex", "Milou", "Margot", "Someone else"])
                 )
+                
+                if name == "Someone else" {
+                    let restart = try? await ask(
+                        "I only talk to friends.  Try again?",
+                        .confirmation
+                    )
+                    
+                    if restart == "yes" {
+                        continue start
+                    }
+                    
+                    print("Stopped at unknown user")
+                    return 
+                }
                 
                 let age = try await ask(
                     "Hi \(name), How old are you?", 
@@ -24,7 +42,7 @@ struct HelloView: View {
                 print("Cancelled \(error)")
                 
                 let restart = try? await ask(
-                    "Start again?",
+                    "You cancelled: Start again?",
                     .confirmation
                 )
                 

@@ -1,8 +1,6 @@
 import SwiftUI
 
-struct CancelError: Error {
-    
-}
+struct CancelError: Error { }
 
 /// Translates question / responses into an async function 'ask'.
 /// Uses continuations
@@ -17,7 +15,6 @@ fileprivate class Questionnaire: ObservableObject {
             question != nil
         }
         set {
-            print("clear")
             if !newValue {
                 question = nil
             } else {
@@ -39,20 +36,19 @@ fileprivate class Questionnaire: ObservableObject {
     /// answer function records the result of each sheet.  
     /// Possible enhancements:
     /// * accept more types
-    /// * accept a Result (errors too)
     func answer(_ answer: String) {
-        question = nil
-        print("answer")
-        if let continuation = answerContinuation {
-            answerContinuation = nil
-            continuation.resume(returning: answer)
-        }
+        resume(Result { answer })
     }
     
     func cancel() {
+        resume(Result { throw CancelError() })
+    }
+    
+    func resume(_ result: Result<Answer, Error>) {
         question = nil
         if let continuation = answerContinuation {
-            continuation.resume(throwing: CancelError())
+            answerContinuation = nil
+            continuation.resume(with: result)
         }
     }
     

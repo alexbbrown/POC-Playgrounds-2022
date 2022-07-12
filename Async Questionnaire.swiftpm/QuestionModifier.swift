@@ -14,7 +14,7 @@ struct QuestionModifier: ViewModifier {
             .confirmationDialog(
                 "Question",
                 isPresented: $presented, 
-                //                titleVisibility: .visible,
+                // titleVisibility: .visible,
                 presenting: question
             ) { question in
                 switch question.answers {
@@ -46,8 +46,6 @@ struct QuestionModifier: ViewModifier {
                 Text(question.question)
             }
     }
-    
-    
 }
 
 extension View {
