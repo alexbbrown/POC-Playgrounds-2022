@@ -37,7 +37,11 @@ struct HelloView: View {
                     .confirmation
                 )
                 
-                print("done with task: \(confirmed)")
+                if confirmed == "no" {
+                    continue start
+                }
+                
+                print("Complete.  I met \(name), age \(age)")
             } catch {
                 print("Cancelled \(error)")
                 

@@ -13,6 +13,8 @@
  can a result builder generate ASYNC code?
  can a result builder build VIEWs at the SAME TIME as ASYNC code?
  
+ can I make it composable - is the result of the *whole* questionnaire a value which is itself an 'answer'?  would require arbitrary type handling.  For example, after collecting details of a user, 'return' a new user record. 
+ 
  Log: 
  
  updated swiftUI code to use modern confirmationDialog
