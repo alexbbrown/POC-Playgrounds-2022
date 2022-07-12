@@ -25,8 +25,8 @@ struct HelloView: View {
 
 
 
-struct RunnerView_Previews: PreviewProvider {
+struct HelloView_Previews: PreviewProvider {
     static var previews: some View {
-        RunnerView()
+        HelloView()
     }
 }
