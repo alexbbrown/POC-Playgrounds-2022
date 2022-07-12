@@ -13,33 +13,9 @@ struct Question: Identifiable {
     }
 }
 
-/// The possible forms of an answer.
+/// The possible forms and values of an answer.
 enum Answers {
     case multipleChoice([String])
     /// confirmation returns "yes" or "no"
     case confirmation
 }
-
-extension Answers {
-    
-    @ViewBuilder
-    func buttons2(_ action: @escaping (String) -> Void) -> some View {
-        switch self {
-        case .multipleChoice(let answers):
-            ForEach(answers, id: \.self) { answer in
-                Button(answer) { 
-                    action(answer)
-                }
-            }
-        case .confirmation:
-            Button("Yes") {
-                action("yes")
-            }
-            Button("No") {
-                action("no")
-            }
-        }
-    }
-}
-
-

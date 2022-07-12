@@ -16,14 +16,27 @@ struct QuestionModifier: ViewModifier {
                 //                titleVisibility: .visible,
                 presenting: question
             ) { question in
-                question.answers.buttons2 { answer in
-                    action(answer)
+                switch question.answers {
+                case .multipleChoice(let answers):
+                    ForEach(answers, id: \.self) { answer in
+                        Button(answer) { 
+                            action(answer)
+                        }
+                    }
+                case .confirmation:
+                    Button("Yes") {
+                        action("yes")
+                    }
+                    Button("No") {
+                        action("no")
+                    }
                 }
             } message: { question in
                 Text(question.question)
             }
-        
     }
+    
+    
 }
 
 extension View {
