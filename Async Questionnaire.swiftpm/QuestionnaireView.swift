@@ -1,16 +1,19 @@
 import SwiftUI
 
-/// Translates question / responses into an async function 'ask'.
+/// Models series of question / responses
+/// client inputs questions and get output answer via an async function 'ask'
 /// Uses continuations
-class AnswerModel: ObservableObject {
+fileprivate class Questioner: ObservableObject {
     /// The value passed to the QuestionView (ActionSheet)
     @Published var question: Question?
     typealias Answer = String
     
-    var answerContinuation: CheckedContinuation<Answer, Never>?
+    typealias AnyContinuation = Any
+    
+    private var answerContinuation: AnyContinuation? = nil
     
     /// ask function is sent to the clients 'script' function
-    func ask(_ question: Question?) async -> Answer {
+    func ask<Answer>(_ question: Question?) async -> Answer {
         await withCheckedContinuation { continuation in
             self.question = question
             answerContinuation = continuation
@@ -21,14 +24,14 @@ class AnswerModel: ObservableObject {
     /// Possible enhancements:
     /// * accept more types
     /// * accept a Result (errors too)
-    fileprivate func answer(_ answer: String) {
-        question = nil
-        if let c = answerContinuation {
+    func answer<Answer>(_ answer: Answer) {
+        assert(question == nil) // The sheet sets this to nil
+        
+        if let continuation = answerContinuation as? CheckedContinuation<Answer, Never> {
             answerContinuation = nil
-            c.resume(returning: answer)
+            continuation.resume(returning: answer)
         }
     }
-    
 }
 
 /// View that presents a series of questions.
@@ -41,10 +44,10 @@ struct QuestionnaireView: View {
     /// The script taskes a query function, which can be called repeatedly to find the answer to several questions.
     let script: (Query) async -> Void 
     
-    @StateObject var model = AnswerModel()
+    @StateObject private var model = Questioner()
     
     var body: some View {
-        Text("runner")
+        Text("Questionnaire")
             .task {
                 await script { question, answers in 
                     let q = Question(question: question, answers: answers)
@@ -52,9 +55,41 @@ struct QuestionnaireView: View {
                 }
             }
             .actionSheet(item: $model.question) { question in 
-                question.sheet { answer in 
-                    model.answer(answer)
-                }
+                ActionSheet(
+                    title: Text(question.question)
+                        .font(.title),
+                    buttons: 
+                        buttons(answers: question.answers)
+                )
             }
+    }
+    
+    
+        /// Each possible answer is generated as an ActionSheet.Button button 
+    func buttons(answers: Answers) -> [ActionSheet.Button] {
+        switch answers {
+        case .strings(let answers):
+            return answers.map { answer -> ActionSheet.Button in
+                    .default(Text(answer)) {
+                        model.answer(answer)
+                    }
+            }
+        case .ints(let answers):
+            return answers.map {
+                answer -> ActionSheet.Button in 
+                    .default(Text("\(answer)")) {
+                        model.answer(answer)
+                    }
+            }
+        case .confirmation:
+            return [
+                .default(Text("Yes")) {
+                    model.answer(true)
+                },
+                .cancel(Text("No")) {
+                    model.answer(false)
+                }
+            ]
+        }
     }
 }

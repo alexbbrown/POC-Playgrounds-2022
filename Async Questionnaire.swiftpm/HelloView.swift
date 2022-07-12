@@ -1,19 +1,20 @@
 import SwiftUI
 
+/// 
 struct HelloView: View {
     var body: some View {
         QuestionnaireView { ask in
             let name = await ask(
                 "Hello!, What's your name?",
-                .multipleChoice(["Alex", "Milou", "Margot"])
+                .strings(["Alex", "Milou", "Margot"])
             )
             
-            let age = await ask(
+            let age: Int = await ask(
                 "Hi \(name), How old are you?", 
-                    .multipleChoice(["10", "20", "30"])
+                    .ints([10, 20, 30])
             )
             
-            let confirmed = await ask(
+            let confirmed: Bool = await ask(
                 "Is it true, \(name), that you are \(age)?",
                 .confirmation
             )
@@ -25,8 +26,8 @@ struct HelloView: View {
 
 
 
-struct RunnerView_Previews: PreviewProvider {
+struct HelloView_Previews: PreviewProvider {
     static var previews: some View {
-        RunnerView()
+        HelloView()
     }
 }
