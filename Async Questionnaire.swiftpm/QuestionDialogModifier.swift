@@ -1,8 +1,40 @@
 import SwiftUI
 
+/// A set of buttons for a confirmation dialog
+struct AnswersButtonsView: View {
+    
+    typealias Answer = Question.Answer
+    let answers: Answers
+    let action: (Answer) -> Void
+    let cancel: (Error) -> Void
+    
+    var body: some View {
+        switch answers {
+        case .choose(let answers):
+            ForEach(answers, id: \.self) { answer in
+                Button(answer) { 
+                    action(answer)
+                }
+            }
+        case .confirm:
+            Button("Yes") {
+                action("yes")
+            }
+            Button("No") {
+                action("no")
+            }
+        }
+        Button(role: .cancel) {
+            cancel(CancellationError())
+        } label: {
+            Text("Cancel")
+        }
+    }
+}
+
 /// Internal type which presents the sheet
 /// See QuestionnaireView for how it interfaces with async
-struct QuestionModifier: ViewModifier {
+struct QuestionDialogModifier: ViewModifier {
     
     @Binding var presented: Bool
     let question: Question? 
@@ -17,31 +49,11 @@ struct QuestionModifier: ViewModifier {
                 // titleVisibility: .visible,
                 presenting: question
             ) { question in
-                switch question.answers {
-                case .choose(let answers):
-                    ForEach(answers, id: \.self) { answer in
-                        Button(answer) { 
-                            action(answer)
-                        }
-                    }
-                    Button(role: .cancel) {
-                        cancel(CancellationError())
-                    } label: {
-                        Text("Cancel")
-                    }
-                case .confirm:
-                    Button("Yes") {
-                        action("yes")
-                    }
-                    Button("No") {
-                        action("no")
-                    }
-                    Button(role: .cancel) {
-                        cancel(CancellationError())
-                    } label: {
-                        Text("Cancel")
-                    }
-                }
+                AnswersButtonsView(
+                    answers: question.answers, 
+                    action: action, 
+                    cancel: cancel
+                )
             } message: { question in
                 Text(question.question)
             }
@@ -51,7 +63,7 @@ struct QuestionModifier: ViewModifier {
 extension View {
     /// Convenience way to call questionModifier
     func question(presented: Binding<Bool>, question: Question?, action: @escaping (Question.Answer) -> Void, cancel: @escaping (Error) -> Void) -> some View {
-        modifier(QuestionModifier(
+        modifier(QuestionDialogModifier(
             presented: presented, 
             question: question,
             action: action,
