@@ -31,7 +31,7 @@ struct HelloView: View {
                 
                 let age = try await ask(
                     "Hi \(name), How old are you?", 
-                        .choose(["10", "20", "30"])
+                        .choose(["10", "20", "30", "40"])
                 )
                 
                 let confirmed = try await ask(
