@@ -7,7 +7,7 @@ struct CancelError: Error { }
 fileprivate class Questionnaire: ObservableObject {
     /// The value passed to the QuestionView (ActionSheet)
     @Published var question: Question?
-    typealias Answer = String
+    typealias Answer = Question.Answer
     
     /// Should we present this view
     var presented: Bool {
